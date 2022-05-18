@@ -1,0 +1,207 @@
+// ignore_for_file: unnecessary_new, prefer_collection_literals, avoid_function_literals_in_foreach_calls, unused_local_variable, prefer_typing_uninitialized_variables
+
+import 'dart:io';
+
+class Book {
+  String title = " ";
+  String author = " ";
+  String genre = " ";
+  int idBorrower = 0;
+  bool available = true;
+
+  List genres = [
+    "Computer Science",
+    "Philosophy",
+    "Pure Science",
+    "Art and Recreation",
+    "History"
+  ];
+
+  addBook() {
+    print("title : ");
+    String? title = stdin.readLineSync();
+    print("author:");
+    String? author = stdin.readLineSync();
+//the genre keeps on looping until the input is valid
+    do {
+      print("genre: ");
+      String? genre = stdin.readLineSync();
+    } while (genres.contains(genre));
+  }
+
+  display() {
+    print(title + " - " + author + " - " + genre);
+    if (available == true) {
+      print(" Status : Available");
+    } else {
+      print(" Status : Borrowed");
+    }
+  }
+}
+
+class Customer {
+  String name = " ";
+  String address = " ";
+  List borrowedBooks = [];
+
+  addCutomer() {
+    print("Name : ");
+    String? name = stdin.readLineSync();
+    print("Address :");
+    String? address = stdin.readLineSync();
+  }
+
+  display() {
+    print("Name: " + name + " Address: " + address + " Books : ");
+    borrowedBooks.forEach((e) {
+      print(bookDetails[e].title + ", ");
+    });
+    print(" ");
+  }
+}
+
+displayOptions() {
+  print("********* E-LIBRARY **********");
+  print("PRESS: ");
+  print("1: Add Book ");
+  print("genres Available: ");
+  print('"Computer Science",\n"Philosophy"');
+  print('"Pure Science",\n"History"');
+  print('"Art and Recreation"');
+  print("2: display Books ");
+  print("3: Borrowed Books: ");
+  print("4: Available Books");
+}
+
+var bookDetails = new Map(); //Map for ISBN : Book Object
+List isbn = []; //List for isbn
+int bookCount = 0; //Total Number of Books
+
+var customerDetails = new Map(); //Map for customer username : customerObject
+List username =
+    []; // List for customer username, which is unique in every customer int customerCount = 0; //Total Number of Customer
+
+main() {
+  var choice = " ";
+
+//Here we repeat the process while not exiting
+  do {
+    print("********* E-LIBRARY **********");
+    print("PRESS: ");
+    print("1: Add Book ");
+    print("genres Available: ");
+    print('"Computer Science",\n"Philosophy"');
+    print('"Pure Science",\n"History"');
+    print('"Art and Recreation"');
+    print("2: display Books ");
+    print("3: Borrowed Books: ");
+    print("4: Available Books");
+    print("Enter Choice: ");
+    String? choice = stdin.readLineSync();
+    switch (choice) {
+      case '1': //Add Book Option
+        {
+          var temp = " ";
+          print("Enter isbn : ");
+          String? temps = stdin.readLineSync();
+          if (isbn.contains(temps)) {
+            print("That isbn already Exist");
+          } else {
+            isbn.add(temps);
+            Book b = new Book();
+            b.addBook();
+            bookDetails[temp] = b;
+            bookCount++;
+            print(b.title);
+            print(" Added");
+          }
+        }
+        break;
+
+      case '2': // Display All Available
+        {
+          print("All Books: ");
+          for (int a = 0; a < bookCount; a++) {
+            print(isbn[a] + " - ");
+            bookDetails[isbn[a]].display();
+          }
+        }
+        break;
+
+      case '3': // Display Not Available
+        {
+          print("Borrowed Books: ");
+          for (int a = 0; a < bookCount; a++) {
+            if (bookDetails[isbn[a]].available == false) {
+              bookDetails[isbn[a]].display();
+            }
+          }
+        }
+        break;
+
+      case '4': // Display Available
+        {
+          print("Available Books");
+          for (int a = 0; a < bookCount; a++) {
+            if (bookDetails[isbn[a]].available == true) {
+              bookDetails[isbn[a]].display();
+            }
+          }
+        }
+        continue;
+
+      case '5': // Add New Customer
+        {
+          var temp = " ";
+          print("Enter username : ");
+          String? tempss = stdin.readLineSync();
+          if (username.contains(tempss)) {
+            print("That username already Exist");
+          } else {
+            username.add(tempss);
+            Customer c = new Customer();
+            c.addCutomer();
+            customerDetails[temp] = c;
+            var customerCount;
+            customerCount++;
+            print("$temp Added");
+          }
+        }
+        continue;
+
+      case '6': // Display All Customer
+        {
+          var customerCount;
+          for (int a = 0; a < customerCount; a++) {
+            customerDetails[username[a]].display();
+          }
+        }
+        continue;
+
+      case '7': //Borrow Book
+        {
+          var tempUname = " ";
+          print("Enter username : ");
+          String? tempUnames = stdin.readLineSync();
+          if (username.contains(tempUnames)) {
+            print("username doesn't Exist, add customer or review username");
+            continue;
+          }
+          var tempisbns = " ";
+          print("Enter isbn : ");
+          String? tempisbn = stdin.readLineSync();
+          if (isbn.contains(tempisbn)) {
+            print("Book doesn't Exist, add book or review isbn");
+            continue;
+          }
+
+          bookDetails[tempisbn].available = false;
+          customerDetails[tempUname].borrowedBooks.add(tempisbn);
+        }
+        continue;
+
+      default:
+        break;
+    }
+  } while (choice != '9');
+}
